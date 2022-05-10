@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Авторизация</h1>
+<form method="post">
+    <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    Выберите город
+  </button>
+  <select class="dropdown-menu"  id="classSelect" name="class" aria-labelledby="dropdownMenuButton1">
+    <option class="dropdown-item">Грязи</option>
+    <option class="dropdown-item">Липецк</option>
+  </select>
+</div><br><br>
+</form>
+{% endblock %}

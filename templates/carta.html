@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}<div>
+<h1></h1><br>
+    <a class="btn btn-success" href="/">Назад</a></div>
+{% if current_user.is_authenticated %}
+
+<br>
+<center><img src={{ img }} alt="здесь должна была быть картинка, но не нашлась"></center><br><br>
+<center>{% for inf in info %}
+            <p>{{ inf }}</p>
+            {% endfor %}</center>
+{% endif %}
+{% endblock %}

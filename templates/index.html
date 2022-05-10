@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Начни заниматься спортом в своём городе!</h1><br>
+{% if current_user.is_authenticated %}
+
+<form class="login_form" method="post">
+    <div class="form-group">
+        <select class="form-control" style="width: 300px;" id="classSelect" name="city" aria-labelledby="dropdownMenuButton1">
+            {% for c in cities %}
+            <option class="dropdown-item">{{ c }}</option>
+            {% endfor %}
+        </select><br>
+    <button type="submit" class="btn btn-primary">Показать виды спорта
+    </button>
+    </div>
+    <br><br>
+    <div class="card-deck">
+        {% for s in sports %}
+        <a href="/sport/{{s.id}}" style="text-decoration: none; color: rgb(47, 47, 47); margin-bottom: 30px;">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h4>{{ s.sport }}</h4>
+                </div>
+                <img src="{{s.im1}}" style="height: 190px;" class="card-img-top" alt="Card image cap">
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</form>
+{% endif %}
+{% endblock %}

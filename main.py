@@ -8,7 +8,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from data.db_session import global_init, create_session
 from forms.loginForm import LoginForm
 from forms.user import RegisterForm
-from forms.test import TestForm
+from forms.sport import SportForm
 from requests import get, post
 from data import users_resources, resources
 from flask_restful import reqparse, abort, Api, Resource
@@ -17,6 +17,7 @@ app = Flask(__name__)
 api = Api(app)
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['LOGIN_URL'] = '/login'
 login_manager = LoginManager()
 s = 0
 login_manager.init_app(app)
@@ -62,23 +63,6 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route('/test', methods=['GET', 'POST'])
-def test():
-    form = TestForm()
-    return render_template('test.html', title='Авторизация', form=form)
-
-
-@app.route('/wow/<int:ind>', methods=['GET', 'POST'])
-def teste(ind):
-    form = TestForm()
-    if ind == 1:
-        current_user.city = 'Грязи'
-        return redirect("/")
-    else:
-        current_user.city = 'Липецк'
-        return redirect("/")
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
@@ -103,6 +87,7 @@ def reqister():
 
 
 @app.route('/sport/<int:ind>', methods=['GET', 'POST'])
+@login_required
 def sport(ind):
     db_sess = create_session()
     current_user.sport = ind
@@ -110,44 +95,26 @@ def sport(ind):
     return redirect("/carta")
 
 
-def get_geocod(plase):
-    geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
-
-    geocoder_params = {
-        "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
-        "geocode": plase,
-        "format": "json"}
-
-    response = requests.get(geocoder_api_server, params=geocoder_params)
-
-    if not response:
-        return jsonify({'error': response.status_code})
-
-    json_response = response.json()
-    toponym = json_response["response"]["GeoObjectCollection"][
-        "featureMember"][0]["GeoObject"]
-    toponym_coodrinates = toponym["Point"]["pos"]
-    return toponym_coodrinates
-
-
 @app.route('/carta', methods=['GET', 'POST'])
+@login_required
 def carta():
-    toponym_longitude, toponym_lattitude = get_geocod(resources.get_city(current_user.city)).split(" ")
-
-    delta = "0.05"
     db_sess = create_session()
     point = db_sess.query(AboutSport).filter(
         AboutSport.city_id == current_user.city, AboutSport.sport_id == current_user.sport).first()
+
+    toponym_longitude, toponym_lattitude = resources.get_geocod(resources.get_city(current_user.city)).split(" ")
+
+    delta = "0.05"
     pt = ''
     i = 1
     info = []
-    for p in point.address.split(';')[:-1]:
-        info.append(f'{i}: {p}, {point.cont}')
-        po = ','.join(get_geocod(p).split(" "))
-        pt += f'{po},pm2bll{i}~'
-        i += 1
-    print(info)
-    pt = pt[:-1]
+    if point.address is not None:
+        for p in point.address.split(';')[:-1]:
+            info.append(f'{i}: {p}, {point.cont}')
+            po = ','.join(resources.get_geocod(p).split(" "))
+            pt += f'{po},pm2bll{i}~'
+            i += 1
+        pt = pt[:-1]
 
     map_params = {
         "ll": ",".join([toponym_longitude, toponym_lattitude]),
@@ -162,8 +129,48 @@ def carta():
     map_file = "static/img/map.jpg"
     with open(map_file, "wb") as file:
         file.write(response.content)
-    return render_template('carta.html', title=resources.get_sport(current_user.sport), img="/../static/img/map.jpg",
+    return render_template('carta.html', title=resources.get_sport(current_user.sport),
+                           img="/../static/img/map.jpg",
                            info=info)
+
+
+@app.route('/sport_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def news_delete(id):
+    db_sess = create_session()
+    sp = db_sess.query(AboutSport).filter(AboutSport.sport_id == id,
+                                            AboutSport.city_id == current_user.city
+                                            ).first()
+    if sp:
+        db_sess.delete(sp)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
+@app.route('/addsport', methods=['GET', 'POST'])
+@login_required
+def addsport():
+    form = SportForm()
+    if form.validate_on_submit():
+        db_sess = create_session()
+        nwsport = db_sess.query(Sport).filter(Sport.sport == form.sport.data).first()
+        if nwsport is None:
+            newsport = Sport(sport=form.sport.data)
+            db_sess.add(newsport)
+            db_sess.commit()
+            nwsport = db_sess.query(Sport).filter(Sport.sport == form.sport.data).first()
+            aboutNewSport = AboutSport(sport_id=nwsport.id, city_id=current_user.city)
+            db_sess.add(aboutNewSport)
+            db_sess.commit()
+            return redirect("/")
+        else:
+            aboutNewSport = AboutSport(sport_id=nwsport.id, city_id=current_user.city)
+            db_sess.add(aboutNewSport)
+            db_sess.commit()
+            return redirect("/")
+    return render_template('addsport.html', title='Добавить спорт', form=form)
 
 
 @app.route('/', methods=['POST', 'GET'])

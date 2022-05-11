@@ -21,6 +21,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                               index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     sport = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    access_rights = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
 
     def __repr__(self):
         return f'<Colonist> {self.id} {self.surname} {self.name}'

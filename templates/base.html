@@ -16,20 +16,20 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">Липецк Спорт</a>
+    <nav class="navbar navbar-light bg-dark">
+        <a class="navbar-brand" style="color: white;">Липецк Спорт</a>
         {% if current_user.is_authenticated %}
-        <a class="btn btn-primary" href="/logout">Выход</a>
+        <a class="btn btn-primary-dark" href="/logout" style="color: white;">Выход</a>
         {% else %}
         <p>
-            <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
-            <a class="btn btn-success" href="/login">Войти</a>
+            <a class="btn btn-primary-dark " href="/register" style="color: white;">Зарегистрироваться</a>
+            <a class="btn btn-success-dark" href="/login" style="color: white;">Войти</a>
         </p>
         {% endif %}
     </nav>
 </header>
 <!-- Begin page content -->
-<main role="main" class="container">
+<main role="main">
     {% block content %}{% endblock %}
 </main>
 </body>

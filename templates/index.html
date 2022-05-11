@@ -1,32 +1,65 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Начни заниматься спортом в своём городе!</h1><br>
+
+<header style="height: 100vh;
+background-image: url(https://vesti-lipetsk.ru/images/cms/thumbs/3346ab1235bd92574b2e9195367d68b771f1dce3/sport2_640_400_jpg_5_80.jpg);
+  background-size: cover;
+  background-position: center;
+  text-align: center;">
+    <div style="width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .7);
+  display: flex;">
+        <h1 style="font-size: 140px;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: auto;">Начни заниматься спортом в своём городе!</h1>
+    </div>
+</header>
 {% if current_user.is_authenticated %}
 
+<div style="margin: 10px 20px 40px 70px;"><br><br>
+<center><h1>Узнайте какие виды спорта есть в вашем городе</h1></center><br>
 <form class="login_form" method="post">
-    <div class="form-group">
-        <select class="form-control" style="width: 300px;" id="classSelect" name="city" aria-labelledby="dropdownMenuButton1">
+    <center><div class="form-group">
+        <select class="form-control" style="width: 300px;" id="classSelect" name="city"
+                aria-labelledby="dropdownMenuButton1">
             {% for c in cities %}
             <option class="dropdown-item">{{ c }}</option>
             {% endfor %}
-        </select><br>
-    <button type="submit" class="btn btn-primary">Показать виды спорта
-    </button>
-    </div>
+        </select><br><p>
+        <button type="submit" class="btn btn-primary">Показать виды спорта
+        </button>
+        {% if current_user.access_rights == 1 %}
+        <a class="btn btn-success" href="/addsport">Добавить спорт</a>
+    {% endif %}
+    </p>
+    </div></center>
     <br><br>
     <div class="card-deck">
         {% for s in sports %}
-        <a href="/sport/{{s.id}}" style="text-decoration: none; color: rgb(47, 47, 47); margin-bottom: 30px;">
-            <div class="card" style="width: 18rem;">
-                <div class="card-header">
+        <div class="card" style="width: 18rem;">
+            <a href="/sport/{{s.id}}" style="text-decoration: none; color: rgb(47, 47, 47); margin-bottom: 30px;">
+            <div class="card-header">
                     <h4>{{ s.sport }}</h4>
                 </div>
                 <img src="{{s.im1}}" style="height: 190px;" class="card-img-top" alt="Card image cap">
-            </div>
         </a>
+        {% if current_user.access_rights == 1 %}
+            <div>
+        <a href="#" class="btn btn-warning">
+            Изменить
+        </a>
+        <a href="/sport_delete/{{ s.id }}" class="btn btn-danger">
+            Удалить
+        </a>
+    </div>
+            {% endif %}
+        </div>
         {% endfor %}
     </div>
-</form>
-{% endif %}
+</form></div>
+    {% endif %}
 {% endblock %}

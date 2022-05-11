@@ -1,6 +1,8 @@
 from data.db_session import create_session
 from data.Cities import City
 from data.sport import Sport
+import requests
+from flask import jsonify
 
 
 def get_city_id(city):
@@ -28,3 +30,22 @@ def get_city(ind):
         return cities.city
     else:
         return None
+
+def get_geocod(plase):
+    geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
+
+    geocoder_params = {
+        "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+        "geocode": plase,
+        "format": "json"}
+
+    response = requests.get(geocoder_api_server, params=geocoder_params)
+
+    if not response:
+        return jsonify({'error': response.status_code})
+
+    json_response = response.json()
+    toponym = json_response["response"]["GeoObjectCollection"][
+        "featureMember"][0]["GeoObject"]
+    toponym_coodrinates = toponym["Point"]["pos"]
+    return toponym_coodrinates

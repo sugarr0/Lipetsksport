@@ -22,15 +22,6 @@ class UsersResource(Resource):
                     user.to_dict(only=('name', 'surname', 'age', 'position', 'speciality', 'address', 'city_from'))
             }
         )
-    # wgfwrg
-
-    def delete(self, users_id):
-        abort_if_not_found(users_id)
-        db_sess = create_session()
-        user = db_sess.query(User).get(users_id)
-        db_sess.delete(user)
-        db_sess.commit()
-        return jsonify({'success': 'OK'})
 
 
 parser = reqparse.RequestParser()

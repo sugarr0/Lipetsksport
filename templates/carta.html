@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div  class="container"><br><br>
+<div  class="container" style="font-family: 'Helvetica', 'Arial', sans-serif;"><br><br>
 <div>
 <h1></h1><br>
     <a class="btn btn-success" href="/">Назад</a></div>
 {% if current_user.is_authenticated %}
 <br>
-<center><p><img style="width: 700px; height: 500px;" src={{ img }} alt="здесь должна была быть картинка, но не нашлась"></center><br><br>
-<center>{% for inf in info %}
+<div style="display: flex;
+  margin-bottom: 60px;
+  margin-left: 30px;
+  width: 95%;"><center><img style="width: 700px; height: 500px;" src={{ img }} alt="здесь должна была быть картинка, но не нашлась"></center><br><br>
+<center><div style="padding-left: 30px; text-align: start; color: rgb(35, 42, 79); font-size: 14pt">{% for inf in info %}
             <p>{{ inf }}</p>
-            {% endfor %}</p></center>
+    {% endfor %}</div></center></div>
     {% endif %}</div>
 {% endblock %}

@@ -1,0 +1,14 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div  class="container"><br><br>
+<h1>Изменение вида спорта</h1>
+<form action="" method="post">
+    <input type="url" class="form-control" id="url" placeholder="Введите url" name="url"><br>
+    {% for i in arr %}
+    <input type="text" class="form-control" id="plase{{i}}" placeholder="Введите место" name="plase{{i}}"><br>
+    <input type="text" class="form-control" id="info{{i}}" placeholder="Введите место" name="info{{i}}"><br>
+    {% endfor %}
+</form></div>
+{% endblock %}

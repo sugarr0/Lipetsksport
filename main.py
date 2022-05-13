@@ -12,6 +12,7 @@ from forms.sport import SportForm
 from requests import get, post
 from data import users_resources, resources
 from flask_restful import reqparse, abort, Api, Resource
+from waitress import serve
 
 app = Flask(__name__)
 api = Api(app)
@@ -32,7 +33,8 @@ def main():
     global_init('db/my.db')
     api.add_resource(users_resources.UsersListResource, '/api/users')
     api.add_resource(users_resources.UsersResource, '/api/users/<int:users_id>')
-    app.run()
+    # app.run()
+    serve(app, host='0.0.0.0', port=5000)
 
 
 @login_manager.user_loader

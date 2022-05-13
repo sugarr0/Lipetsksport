@@ -24,5 +24,6 @@ SQLAlchemy-serializer==1.4.1
 sqlparse==0.4.2
 tzdata==2022.1
 urllib3==1.26.9
+waitress==1.4.3
 Werkzeug==2.0.3
 WTForms==3.0.1

@@ -4,7 +4,6 @@ certifi==2021.10.8
 charset-normalizer==2.0.12
 click==8.0.4
 colorama==0.4.4
-Django==4.0.3
 Flask==2.0.3
 Flask-Login==0.5.0
 Flask-RESTful==0.3.9
@@ -16,12 +15,6 @@ itsdangerous==2.1.0
 Jinja2==3.0.3
 jsonify==0.5
 MarkupSafe==2.1.0
-Pillow==9.1.0
-pygame==2.1.2
-PyQt5==5.15.6
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.9.0
-PyQt5-stubs==5.15.2.0
 pytz==2022.1
 qtwidgets==0.18
 requests==2.27.1

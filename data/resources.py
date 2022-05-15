@@ -31,7 +31,8 @@ def get_city(ind):
     else:
         return None
 
-def get_geocod(plase):
+
+def get_geocod(plase) -> str:
     geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
 
     geocoder_params = {
@@ -42,10 +43,10 @@ def get_geocod(plase):
     response = requests.get(geocoder_api_server, params=geocoder_params)
 
     if not response:
-        return jsonify({'error': response.status_code})
+        return ''
 
     json_response = response.json()
     toponym = json_response["response"]["GeoObjectCollection"][
         "featureMember"][0]["GeoObject"]
     toponym_coodrinates = toponym["Point"]["pos"]
-    return toponym_coodrinates
+    return str(toponym_coodrinates)

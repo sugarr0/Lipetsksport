@@ -2,13 +2,20 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if current_user.access_rights == 1 %}
 <div  class="container"><br><br>
 <h1>Изменение вида спорта</h1>
 <form action="" method="post">
-    <input type="url" class="form-control" id="url" placeholder="Введите url" name="url"><br>
+    <input type="url" class="form-control" id="url" placeholder="Введите url" name="url" value="{{url}}"><br>
     {% for i in arr %}
-    <input type="text" class="form-control" id="plase{{i}}" placeholder="Введите место" name="plase{{i}}"><br>
-    <input type="text" class="form-control" id="info{{i}}" placeholder="Введите место" name="info{{i}}"><br>
-    {% endfor %}
-</form></div>
+     {% if i[0] == 0 %}
+    <h4>Новый адрес:</h4>
+    {% else %}
+    <h4>Адрес:</h4>{% endif %}
+    <input type="text" class="form-control" id="plase{{i[0]}}" placeholder="Введите место" name="plase{{i[0]}}" value="{{i[1]}}"><br>
+    <h4>Информация:</h4>
+    <input type="text" class="form-control" id="info{{i[0]}}" placeholder="Введите место" name="info{{i[0]}}" value="{{i[2]}}"><br>
+{% endfor %}
+    <button type="submit" class="btn btn-primary"></button>
+</form></div>{% endif %}
 {% endblock %}

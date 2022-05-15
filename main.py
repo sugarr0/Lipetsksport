@@ -111,6 +111,7 @@ def carta():
     i = 1
     info = []
     if point.address is not None:
+        print(point.address)
         for p in point.address.split(';')[:-1]:
             info.append(f'{i}: {p}, {point.cont}')
             po = ','.join(resources.get_geocod(p).split(" "))
@@ -128,27 +129,71 @@ def carta():
     map_api_server = "http://static-maps.yandex.ru/1.x/"
     response = requests.get(map_api_server, params=map_params)
 
-    map_file = "static/img/map.jpg"
+    map_file = f"static/img/map{current_user.id}.jpg"
     with open(map_file, "wb") as file:
         file.write(response.content)
     return render_template('carta.html', title=resources.get_sport(current_user.sport),
-                           img="/../static/img/map.jpg",
+                           img=f"static/img/map{current_user.id}.jpg",
                            info=info)
 
 
 @app.route('/sport_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(id):
+def sport_delete(id):
     db_sess = create_session()
     sp = db_sess.query(AboutSport).filter(AboutSport.sport_id == id,
-                                            AboutSport.city_id == current_user.city
-                                            ).first()
+                                          AboutSport.city_id == current_user.city
+                                          ).first()
     if sp:
         db_sess.delete(sp)
         db_sess.commit()
     else:
         abort(404)
     return redirect('/')
+
+
+@app.route('/updatesport/<int:ind>', methods=['GET', 'POST'])
+@login_required
+def updatesport(ind):
+    db_sess = create_session()
+    n = 0
+    sp = db_sess.query(AboutSport).filter(AboutSport.sport_id == ind,
+                                          AboutSport.city_id == current_user.city
+                                          ).first()
+    sprt = db_sess.query(Sport).filter(Sport.id == ind).first()
+    if sp and sp.address is not None:
+        n = len(sp.address.split(';'))
+    elif sp.address is not None:
+        n = 1
+    if request.method == 'POST':
+        p = ''
+        inf = ''
+        for i in range(n):
+            if request.form[f'plase{i}'] == '':
+                continue
+            else:
+                p += str(request.form[f'plase{i}']) + ';'
+            if request.form[f'info{i}'] == '':
+                inf += ' ;'
+            else:
+                inf += str(request.form[f'info{i}']) + ';'
+        sp.address = p
+        sp.cont = inf
+        sprt.im1 = str(request.form['url'])
+        db_sess.commit()
+        return redirect("/")
+    if sprt:
+        url = sprt.im1
+        if sp:
+            plases = [(0, '', '')]
+            if sp.address is not None:
+                for s in range(len(sp.address.split(';')[:-1])):
+                    if sp.cont is not None and len(sp.cont.split(';')[:-1]) > s:
+                        plases.append((s + 1, sp.address.split(';')[:-1][s], sp.cont.split(';')[:-1][s]))
+                    else:
+                        plases.append((s + 1, sp.address.split(';')[:-1][s], ''))
+
+            return render_template('updateSport.html', title='Изменить спорт', url=url, arr=plases)
 
 
 @app.route('/addsport', methods=['GET', 'POST'])

@@ -40,16 +40,16 @@ background-image: url(https://vesti-lipetsk.ru/images/cms/thumbs/3346ab1235bd925
     <br><br>
     <div class="card-deck">
         {% for s in sports %}
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 340px;">
             <a href="/sport/{{s.id}}" style="text-decoration: none; color: rgb(47, 47, 47); margin-bottom: 30px;">
             <div class="card-header">
                     <h4>{{ s.sport }}</h4>
                 </div>
-                <img src="{{s.im1}}" style="height: 190px;" class="card-img-top" alt="Card image cap">
+                <img src="{{s.im1}}" style="height: 190px; width: 337px;" class="card-img-top" alt="Card image cap">
         </a>
         {% if current_user.access_rights == 1 %}
             <div>
-        <a href="#" class="btn btn-warning">
+        <a href="/updatesport/{{ s.id }}" class="btn btn-warning">
             Изменить
         </a>
         <a href="/sport_delete/{{ s.id }}" class="btn btn-danger">

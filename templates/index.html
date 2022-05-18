@@ -3,13 +3,13 @@
 {% block content %}
 
 <header style="height: 100vh;
-background-image: url(https://vesti-lipetsk.ru/images/cms/thumbs/3346ab1235bd92574b2e9195367d68b771f1dce3/sport2_640_400_jpg_5_80.jpg);
+background-image: url(https://sun9-29.userapi.com/s/v1/ig2/Q-IQKFwzTv16z2nM2W3gNXXf3iSiGvv-mcVq8dZnTD-yyrr5gScfHD3zmT3jYk-5sVnvtm-T_tvhim2Wt2faS-2d.jpg?size=1280x800&quality=96&type=album);
   background-size: cover;
   background-position: center;
   text-align: center;">
     <div style="width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, .7);
+  background-color: rgba(0, 0, 0, .8);
   display: flex;">
         <h1 style="font-size: 140px;
   color: white;
@@ -21,45 +21,56 @@ background-image: url(https://vesti-lipetsk.ru/images/cms/thumbs/3346ab1235bd925
 {% if current_user.is_authenticated %}
 
 <div style="margin: 10px 20px 40px 70px;"><br><br>
-<center><h1>Узнайте какие виды спорта есть в вашем городе</h1></center><br>
-<form class="login_form" method="post">
-    <center><div class="form-group">
-        <select class="form-control" style="width: 300px;" id="classSelect" name="city"
-                aria-labelledby="dropdownMenuButton1">
-            {% for c in cities %}
-            <option class="dropdown-item">{{ c }}</option>
-            {% endfor %}
-        </select><br><p>
-        <button type="submit" class="btn btn-primary">Показать виды спорта
-        </button>
-        {% if current_user.access_rights == 1 %}
-        <a class="btn btn-success" href="/addsport">Добавить спорт</a>
-    {% endif %}
-    </p>
-    </div></center>
-    <br><br>
-    <div class="card-deck">
-        {% for s in sports %}
-        <div class="card" style="width: 340px;">
-            <a href="/sport/{{s.id}}" style="text-decoration: none; color: rgb(47, 47, 47); margin-bottom: 30px;">
-            <div class="card-header">
-                    <h4>{{ s.sport }}</h4>
+    <center><h1>Узнайте какие виды спорта есть в вашем городе</h1></center>
+    <br>
+    <br>
+
+    <form class="login_form" method="post">
+        <center>
+            <div class="form-group">
+                <p><select class="form-control" style="width: 300px;" id="classSelect" name="city"
+                           aria-labelledby="dropdownMenuButton1">
+                    {% for c in cities %}
+                    <option class="dropdown-item">{{ c }}</option>
+                    {% endfor %}
+                </select><br>
+                    <button type="submit" class="btn btn-primary">Показать виды спорта</button>
+                </p>
+                <p>
+                    {% if current_user.access_rights == 1 %}
+                    <a class="btn btn-success" href="/addsport">Добавить спорт</a>
+                    <a class="btn btn-success" href="#">Добавить город</a>
+                    {% endif %}
+                </p>
+            </div>
+        </center>
+        <br><br>
+        <div class="card-deck">
+            {% for s in sports %}
+            <div class="col-sm-2,8" style="margin-bottom: 30px;">
+                <div class="card" style="width: 22rem;">
+                    <a href="/sport/{{s.id}}"
+                       style="text-decoration: none; color: rgb(47, 47, 47); margin-bottom: 10px;">
+                        <div class="card-header">
+                            <h4>{{ s.sport }}</h4>
+                        </div>
+                        <img src="{{s.im1}}" style="height: 190px;" class="card-img-top" alt="Card image cap">
+                    </a>
+                    {% if current_user.access_rights == 1 %}
+                    <div>
+                        <a href="/updatesport/{{ s.id }}" class="btn btn-warning">
+                            Изменить
+                        </a>
+                        <a href="/sport_delete/{{ s.id }}" class="btn btn-danger">
+                            Удалить
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
-                <img src="{{s.im1}}" style="height: 190px; width: 337px;" class="card-img-top" alt="Card image cap">
-        </a>
-        {% if current_user.access_rights == 1 %}
-            <div>
-        <a href="/updatesport/{{ s.id }}" class="btn btn-warning">
-            Изменить
-        </a>
-        <a href="/sport_delete/{{ s.id }}" class="btn btn-danger">
-            Удалить
-        </a>
-    </div>
-            {% endif %}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-</form></div>
-    {% endif %}
+    </form>
+</div>
+{% endif %}
 {% endblock %}

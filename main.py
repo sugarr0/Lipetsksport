@@ -220,6 +220,11 @@ def addsport():
     return render_template('addsport.html', title='Добавить спорт', form=form)
 
 
+@app.route('/events', methods=['GET', 'POST'])
+def events():
+    return render_template('events.html', title='Мероприятия')
+
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if current_user.is_authenticated:

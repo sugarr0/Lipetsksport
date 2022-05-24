@@ -4,11 +4,13 @@ from data.Cities import City
 from data.aboutSport import AboutSport
 from data.sport import Sport
 from data.users import User
+from data.events import Events
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.db_session import global_init, create_session
 from forms.loginForm import LoginForm
 from forms.user import RegisterForm
 from forms.sport import SportForm
+from forms.addEventForm import EventForm
 from requests import get, post
 from data import users_resources, resources
 from flask_restful import reqparse, abort, Api, Resource
@@ -222,7 +224,46 @@ def addsport():
 
 @app.route('/events', methods=['GET', 'POST'])
 def events():
-    return render_template('events.html', title='Мероприятия')
+    db_sess = create_session()
+    ev = db_sess.query(Events).all()
+    if ev:
+        return render_template('events.html', title='Мероприятия', events=ev)
+    else:
+        return render_template('events.html', title='Мероприятия', events=[])
+
+
+@app.route('/event_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def event_delete(id):
+    db_sess = create_session()
+    ev = db_sess.query(Events).filter(Events.id == id).first()
+    if ev:
+        db_sess.delete(ev)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/events')
+
+
+@app.route('/event_add', methods=['GET', 'POST'])
+@login_required
+def event_add():
+    form = EventForm()
+    if form.validate_on_submit():
+        db_sess = create_session()
+        if db_sess.query(Events).filter(Events.name == form.name.data).first():
+            return render_template('addevent.html', title='Добавить мероприятие',
+                                   form=form,
+                                   message="Такое мероприятие уже есть")
+        ev = Events(name=form.name.data,
+                    about=form.about.data,
+                    when=form.when.data,
+                    img=form.img.data)
+        db_sess.add(ev)
+        db_sess.commit()
+        return redirect('/events')
+    return render_template('addevent.html', title='Добавить мероприятие',
+                           form=form)
 
 
 @app.route('/', methods=['POST', 'GET'])

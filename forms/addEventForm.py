@@ -7,5 +7,6 @@ class EventForm(FlaskForm):
     when = StringField('Дата проведения', validators=[DataRequired()])
     name = StringField('Название', validators=[DataRequired()])
     about = StringField('Место проведения', validators=[DataRequired()])
+    sport = StringField('Спортивное направление', validators=[DataRequired()])
     img = StringField('Url картинки', validators=[DataRequired()])
     submit = SubmitField('Добавить')

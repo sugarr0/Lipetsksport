@@ -34,6 +34,15 @@
         {% endfor %}
         </p>
         <p>
+            {{ form.sport.label }}<br>
+            {{ form.sport(class="form-control") }}<br>
+            {% for error in form.sport.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
+        </p>
+        <p>
             {{ form.img.label }}<br>
             {{ form.img(class="form-control") }}<br>
             {% for error in form.img.errors %}

@@ -204,9 +204,9 @@ def addsport():
     form = SportForm()
     if form.validate_on_submit():
         db_sess = create_session()
-        nwsport = db_sess.query(Sport).filter(Sport.sport == form.sport.data).first()
+        nwsport = db_sess.query(Sport).filter(Sport.sport == form.sport.data.capitalize()).first()
         if nwsport is None:
-            newsport = Sport(sport=form.sport.data)
+            newsport = Sport(sport=form.sport.data.capitalize())
             db_sess.add(newsport)
             db_sess.commit()
             nwsport = db_sess.query(Sport).filter(Sport.sport == form.sport.data).first()
@@ -225,11 +225,20 @@ def addsport():
 @app.route('/events', methods=['GET', 'POST'])
 def events():
     db_sess = create_session()
+    sp = db_sess.query(Sport).all()
+    arr = ['Все']
+    arr.extend([s.sport for s in sp])
     ev = db_sess.query(Events).all()
+    if request.method == 'POST':
+        if request.form['sp'] == 'Все':
+            return redirect("/events")
+        spr = db_sess.query(Sport).filter(Sport.sport == request.form['sp']).first()
+        ev = db_sess.query(Events).filter(Events.sport == spr.id).all()
+        return render_template('events.html', title='Мероприятия', events=ev, sports=arr)
     if ev:
-        return render_template('events.html', title='Мероприятия', events=ev)
+        return render_template('events.html', title='Мероприятия', events=ev, sports=arr)
     else:
-        return render_template('events.html', title='Мероприятия', events=[])
+        return render_template('events.html', title='Мероприятия', events=[], sports=arr)
 
 
 @app.route('/event_delete/<int:id>', methods=['GET', 'POST'])
@@ -255,8 +264,15 @@ def event_add():
             return render_template('addevent.html', title='Добавить мероприятие',
                                    form=form,
                                    message="Такое мероприятие уже есть")
+        nwsport = db_sess.query(Sport).filter(Sport.sport == form.sport.data.capitalize()).first()
+        if nwsport is None:
+            newsport = Sport(sport=form.sport.data.capitalize())
+            db_sess.add(newsport)
+            db_sess.commit()
+        nwsport = db_sess.query(Sport).filter(Sport.sport == form.sport.data.capitalize()).first()
         ev = Events(name=form.name.data,
                     about=form.about.data,
+                    sport=nwsport.id,
                     when=form.when.data,
                     img=form.img.data)
         db_sess.add(ev)
@@ -264,6 +280,12 @@ def event_add():
         return redirect('/events')
     return render_template('addevent.html', title='Добавить мероприятие',
                            form=form)
+
+
+@app.route('/athletes', methods=['GET', 'POST'])
+@login_required
+def athlets():
+    return render_template('athletes.html', title='Добавить мероприятие')
 
 
 @app.route('/', methods=['POST', 'GET'])

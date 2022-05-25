@@ -3,7 +3,19 @@
 {% block content %}<br>
 <h1 style=" margin-bottom: 50px; margin-left: 20px;">Мероприятия {% if current_user.access_rights == 1 %}<a
         href="/event_add" style="margin-left: 30px;" class="btn btn-primary">+</a>{% endif %}</h1>
-
+<form class="form" method="post">
+<center>
+            <div class="form-group">
+                <p><select class="form-control" style="width: 300px;" id="classSelect" name="sp"
+                           aria-labelledby="dropdownMenuButton1">
+                    {% for c in sports %}
+                    <option class="dropdown-item">{{ c }}</option>
+                    {% endfor %}
+                </select><br>
+                    <button type="submit" class="btn btn-primary">Выбрать</button>
+                </p>
+            </div>
+</center></form>
 <div class="card-deck" style=" margin-left: 10px;">
     {% for event in events %}
     <div class="col-sm-2,8" style="margin-bottom: 30px;">

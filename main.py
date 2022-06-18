@@ -111,11 +111,13 @@ def carta():
     delta = "0.05"
     pt = ''
     i = 1
+    inf = ['' for _ in range(len(point.address.split(';')[:-1]))]
+    if point.cont.split(';')[:-1]:
+        inf = point.cont.split(';')[:-1]
     info = []
     if point.address is not None:
-        print(point.address)
         for p in point.address.split(';')[:-1]:
-            info.append(f'{i}: {p}, {point.cont}')
+            info.append((str(i), f'{p}, {inf[i - 1]}'))
             po = ','.join(resources.get_geocod(p).split(" "))
             pt += f'{po},pm2bll{i}~'
             i += 1
@@ -228,7 +230,7 @@ def events():
     sp = db_sess.query(Sport).all()
     arr = ['Все']
     arr.extend([s.sport for s in sp])
-    ev = db_sess.query(Events).all()
+    ev = reversed(db_sess.query(Events).all())
     if request.method == 'POST':
         if request.form['sp'] == 'Все':
             return redirect("/events")

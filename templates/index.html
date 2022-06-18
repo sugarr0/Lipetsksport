@@ -45,9 +45,10 @@ background-image: url(https://sun9-29.userapi.com/s/v1/ig2/Q-IQKFwzTv16z2nM2W3gN
             </div>
         </center>
         <br><br>
+        <center>
         <div class="card-deck">
             {% for s in sports %}
-            <div class="col-sm-2,8" style="margin-bottom: 30px;">
+            <div class="col-sm-1,1" style="margin-bottom: 30px;">
                 <div class="card" style="width: 22rem;">
                     <a href="/sport/{{s.id}}"
                        style="text-decoration: none; color: rgb(47, 47, 47); margin-bottom: 10px;">
@@ -69,7 +70,7 @@ background-image: url(https://sun9-29.userapi.com/s/v1/ig2/Q-IQKFwzTv16z2nM2W3gN
                 </div>
             </div>
             {% endfor %}
-        </div>
+        </div></center>
     </form>
 </div>
 {% endif %}

@@ -1,20 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}<br>
-<h1 style=" margin-bottom: 50px; margin-left: 20px;">Спортсмены</h1>
-<!--<form class="form" method="post">-->
-<!--<center>-->
-<!--            <div class="form-group">-->
-<!--                <p><select class="form-control" style="width: 300px;" id="classSelect" name="sp"-->
-<!--                           aria-labelledby="dropdownMenuButton1">-->
-<!--                    {% for c in athletes %}-->
-<!--                    <option class="dropdown-item">{{ c }}</option>-->
-<!--                    {% endfor %}-->
-<!--                </select><br>-->
-<!--                    <button type="submit" class="btn btn-primary">Выбрать</button>-->
-<!--                </p>-->
-<!--            </div>-->
-<!--</center></form>-->
+<style type="text/css">
+  .info {
+  background-color: #f9f9ff;
+  padding: 10px 25px;
+}
+
+.info__switch {
+  display: none;
+}
+
+.info__body {
+  max-height: 0;
+  overflow: hidden;
+  transition: 0.4s;
+}
+
+.info__switch:checked~.info__body {
+  max-height: 800px;
+}
+
+.info__headline::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 4px;
+  border: 6px solid #39739d;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  border-left-color: transparent;
+}
+
+.info__switch:checked~.info__headline::before {
+  transform: rotate(180deg) translateY(6px);
+}
+
+.info__headline {
+  display: block;
+  position: relative;
+  margin-bottom: 15px;
+  user-select: none;
+  color: #39739d;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.info__headline:hover {
+  text-decoration: underline;
+}
+
+
+
+</style>
+<h1 style=" margin-bottom: 50px; margin-left: 20px;">Спортсмены{% if current_user.access_rights == 1 %}<a
+        href="/athlete_add" style="margin-left: 30px;" class="btn btn-primary">+</a>{% endif %}</h1>
+{% for athlet in athletes_keys %}
+<div class="info">
+    <input id="info__body_{{athlet[0]}}" class="info__switch" type="checkbox">
+    <label for="info__body_{{athlet[0]}}" class="info__headline"><h5>{{athlet[1]}}</h5></label>
+    <div class="info__body">
+        {% for a in athletes[athlet] %}
+        <figure class="figure" style="margin-right: 30px">
+            <img src={{a.img}} class="figure-img img-fluid rounded" alt="..." width="250" height="200">
+            <figcaption class="figure-caption">{{a.name}}</figcaption>
+            <figcaption class="figure-caption">{{a.achievement}}</figcaption><br>
+            {% if current_user.access_rights == 1 %}
+            <a href="/athlete_delete/{{ a.id }}" class="btn btn-danger">
+                Удалить
+            </a>
+            {% endif %}
+        </figure>
+
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
 
 
 {% endblock %}

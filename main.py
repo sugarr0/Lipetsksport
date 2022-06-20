@@ -333,7 +333,6 @@ def athlets():
         if athletes:
             athlets_dict[(i, t.sport)] = [at for at in athletes]
             i += 1
-    print([a for a in athlets_dict.keys()])
 
     return render_template('athletes.html', title='', athletes_keys=[a for a in athlets_dict.keys()],
                            athletes=athlets_dict)
